@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "input-output-app-fa114": {
+      "hosting": {
+        "ingreso-egreso-app": [
+          "input-output-app-fa114"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "input-output-app-fa114"
+  }
+}
