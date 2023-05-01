@@ -9,7 +9,9 @@ import { AuthListenerUserService } from './services/auth-listener-user.service';
 export class AppComponent {
   title = 'ingreso-egreso-app';
 
-  constructor(private _auth: AuthListenerUserService) {
-   _auth.initAuthListener();
+  constructor(
+    private _authListenerUserService: AuthListenerUserService
+  ) {
+    _authListenerUserService.initAuthListener();
   }
 }

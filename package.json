@@ -21,6 +21,8 @@
     "@angular/router": "~13.0.0",
     "@firebase/firestore": "^3.10.1",
     "@firebase/firestore-compat": "^0.3.7",
+    "@ngrx/store": "^13.2.0",
+    "@ngrx/store-devtools": "^13.2.0",
     "bootstrap": "^5.2.3",
     "firebase": "^9.20.0",
     "rxfire": "^6.0.3",

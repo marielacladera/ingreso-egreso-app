@@ -20,6 +20,10 @@ import { InputOutputComponent } from './input-output/input-output.component';
 import { StatisticsComponent } from './input-output/statistics/statistics.component';
 import { DetailComponent } from './input-output/detail/detail.component';
 
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { StoreModule } from '@ngrx/store';
+import { appReducers } from './app.reducer';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -40,6 +44,12 @@ import { DetailComponent } from './input-output/detail/detail.component';
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
+    StoreModule.forRoot(appReducers),
+    StoreDevtoolsModule.instrument({
+      maxAge: 25,
+      logOnly: environment.production,
+      autoPause: true,
+    }),
   ],
   providers: [],
   bootstrap: [AppComponent]

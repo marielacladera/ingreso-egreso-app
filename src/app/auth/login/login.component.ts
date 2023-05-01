@@ -1,25 +1,37 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { UserCredential } from 'firebase/auth';
-import { AuthSignInService } from 'src/app/services/auth-sign-in.service';
 
-import Swal from 'sweetalert2';
+import { Store } from '@ngrx/store';
+import { Subject, takeUntil } from 'rxjs';
+import { AppState } from 'src/app/app.reducer';
+
+import { AuthSignInService } from 'src/app/services/auth-sign-in.service';
+import * as ui from 'src/app/shared/ui.actions';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LoginComponent implements OnInit {
 
+export class LoginComponent implements OnInit, OnDestroy {
+
+  public loading: boolean;
   public loginFormGroup: FormGroup;
+
+  private _unSubscribe: Subject<void>;
 
   constructor(
     private _authSigInService: AuthSignInService,
-    private _router: Router
+    private _store: Store<AppState>,
+    private _router: Router,
+    private _cdr: ChangeDetectorRef
   ) {
     this.loginFormGroup = new FormGroup({});
+    this._unSubscribe = new Subject<void>();
+    this.loading = false;
   }
 
   public ngOnInit(): void {
@@ -28,32 +40,26 @@ export class LoginComponent implements OnInit {
 
   public login(): void {
     if (this.loginFormGroup.invalid) { return; }
-
-    Swal.fire({
-      title: 'Espere por Favor!',
-      didOpen: () => {
-        Swal.showLoading()
-    }});
-
+    this._store.dispatch(ui.isLoading());
     const { email, password } = this.loginFormGroup.value;
-    this._authSigInService
-      .signIn(email, password)
-      .then((res: UserCredential) => {
-        console.log('credential signIn: ', res);
-        Swal.close();
+    this._authSigInService.signIn(email, password)
+      .then(() => {
+        this._store.dispatch(ui.stopLoading());
         this._router.navigate(['/']);
       })
-      .catch((error) => {
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: error.message,
-        });
+      .catch(() => {
+        this._store.dispatch(ui.stopLoading());
+        this._cdr.markForCheck();
       });
+  }
+
+  public ngOnDestroy(): void {
+    this._finalize();
   }
 
   private _initialize(): void {
     this._loadLoginForm();
+    this._beginLoading();
   }
 
   private _loadLoginForm(): void {
@@ -61,6 +67,19 @@ export class LoginComponent implements OnInit {
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [Validators.required]),
     });
+  }
+
+  private _beginLoading(): void {
+    this._store.select('ui')
+    .pipe(takeUntil(this._unSubscribe))
+      .subscribe(({isLoading}) => {
+        this.loading = isLoading;
+      });
+  }
+
+  private _finalize(): void {
+    this._unSubscribe.next();
+    this._unSubscribe.complete();
   }
 
 }
