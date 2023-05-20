@@ -18,7 +18,7 @@ import * as ui from 'src/app/shared/ui.actions';
 
 export class LoginComponent implements OnInit, OnDestroy {
 
-  public loading: boolean;
+  public isLoading: boolean;
   public loginFormGroup: FormGroup;
 
   private _unSubscribe: Subject<void>;
@@ -26,16 +26,30 @@ export class LoginComponent implements OnInit, OnDestroy {
   constructor(
     private _authSigInService: AuthSignInService,
     private _store: Store<AppState>,
+    private _cdr: ChangeDetectorRef,
     private _router: Router,
-    private _cdr: ChangeDetectorRef
   ) {
     this.loginFormGroup = new FormGroup({});
     this._unSubscribe = new Subject<void>();
-    this.loading = false;
+    this.isLoading = false;
   }
 
   public ngOnInit(): void {
     this._initialize();
+  }
+
+  public ngOnDestroy(): void {
+    this._finalize();
+  }
+
+  private _initialize(): void {
+    this._loadLoginForm();
+    this._changeLoading();
+  }
+
+  private _finalize(): void {
+    this._unSubscribe.next();
+    this._unSubscribe.complete();
   }
 
   public login(): void {
@@ -49,17 +63,8 @@ export class LoginComponent implements OnInit, OnDestroy {
       })
       .catch(() => {
         this._store.dispatch(ui.stopLoading());
-        this._cdr.markForCheck();
+        //this._cdr.markForCheck();
       });
-  }
-
-  public ngOnDestroy(): void {
-    this._finalize();
-  }
-
-  private _initialize(): void {
-    this._loadLoginForm();
-    this._beginLoading();
   }
 
   private _loadLoginForm(): void {
@@ -69,17 +74,12 @@ export class LoginComponent implements OnInit, OnDestroy {
     });
   }
 
-  private _beginLoading(): void {
+  private _changeLoading(): void {
     this._store.select('ui')
     .pipe(takeUntil(this._unSubscribe))
       .subscribe(({isLoading}) => {
-        this.loading = isLoading;
+        this.isLoading = isLoading;
       });
-  }
-
-  private _finalize(): void {
-    this._unSubscribe.next();
-    this._unSubscribe.complete();
   }
 
 }

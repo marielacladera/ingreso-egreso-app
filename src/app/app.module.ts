@@ -6,6 +6,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { environment } from '../environments/environment';
 
+import { NgChartsModule } from 'ng2-charts';
+
 import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
 import { provideAuth,getAuth } from '@angular/fire/auth';
 import { provideFirestore,getFirestore } from '@angular/fire/firestore';
@@ -16,13 +18,15 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { FooterComponent } from './shared/footer/footer.component';
 import { NavbarComponent } from './shared/navbar/navbar.component';
 import { SidebarComponent } from './shared/sidebar/sidebar.component';
-import { InputOutputComponent } from './input-output/input-output.component';
-import { StatisticsComponent } from './input-output/statistics/statistics.component';
-import { DetailComponent } from './input-output/detail/detail.component';
+import { IncomeDischargeComponent } from './income-discharge/income-discharge.component';
+
 
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { StoreModule } from '@ngrx/store';
 import { appReducers } from './app.reducer';
+import { DetailComponent } from './income-discharge/detail/detail.component';
+import { StatisticsComponent } from './income-discharge/statistics/statistics.component';
+import { OrderIncomeDischargePipe } from './pipes/order-income-discharge.pipe';
 
 @NgModule({
   declarations: [
@@ -33,13 +37,15 @@ import { appReducers } from './app.reducer';
     FooterComponent,
     NavbarComponent,
     SidebarComponent,
-    InputOutputComponent,
+    IncomeDischargeComponent,
+    DetailComponent,
     StatisticsComponent,
-    DetailComponent
+    OrderIncomeDischargePipe
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
+    NgChartsModule,
     ReactiveFormsModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
@@ -54,4 +60,5 @@ import { appReducers } from './app.reducer';
   providers: [],
   bootstrap: [AppComponent]
 })
+
 export class AppModule { }

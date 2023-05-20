@@ -10,7 +10,7 @@ export class AuthLogoutService {
     private _auth: Auth
   ) { }
 
-  public logout() {
+  public logout(): Promise<void> {
     return signOut((this._auth));
   }
 }

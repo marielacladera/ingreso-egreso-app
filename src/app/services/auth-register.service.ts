@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Auth, UserCredential, createUserWithEmailAndPassword} from '@angular/fire/auth';
+import { Auth, UserCredential, createUserWithEmailAndPassword } from '@angular/fire/auth';
 import { User } from '../model/user.model';
 import { Firestore, doc, setDoc } from '@angular/fire/firestore';
 
@@ -13,8 +13,7 @@ export class AuthRegisterService {
     private _auth: Auth,
   ) {}
 
-  public createUser( name: string,
-    email: string, password: string ): Promise<void> {
+  public createUser( email: string, name: string, password: string ): Promise<void> {
     return createUserWithEmailAndPassword(this._auth, email, password).then(
       ({ user }: UserCredential) => {
         const newUser = new User(user.uid, name, email);

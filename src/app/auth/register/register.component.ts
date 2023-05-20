@@ -15,8 +15,8 @@ import * as ui from 'src/app/shared/ui.actions';
 })
 export class RegisterComponent implements OnInit, OnDestroy {
 
+  public isLoading: boolean;
   public registerFormGroup: FormGroup;
-  public loading: boolean;
 
   private _unSubscribe: Subject<void>;
 
@@ -29,22 +29,33 @@ export class RegisterComponent implements OnInit, OnDestroy {
   ) {
     this.registerFormGroup = new FormGroup({});
     this._unSubscribe = new Subject<void>(),
-    this.loading = false;
+    this.isLoading = false;
   }
 
   public ngOnInit(): void {
     this._initialize();
   }
 
-  public createUser(): void {
-    if (this.registerFormGroup.invalid) {
-      return;
-    }
-    this._store.dispatch(ui.isLoading());
+  public ngOnDestroy(): void {
+    this._finalize();
+  }
 
+  private _initialize(): void {
+    this._loadRegisterForm();
+    this._changeLoading();
+  }
+
+  private _finalize(): void {
+    this._unSubscribe.next();
+    this._unSubscribe.complete();
+  }
+
+  public createUser(): void {
+    if (this.registerFormGroup.invalid) { return; }
+    this._store.dispatch(ui.isLoading());
     const { name, email, password } = this.registerFormGroup.value;
     this._authRegisterService
-      .createUser(name, email, password)
+      .createUser( email, name, password )
       .then(() => {
         this._store.dispatch(ui.stopLoading());
         this._router.navigate(['/']);
@@ -55,15 +66,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
       });
   }
 
-  public ngOnDestroy(): void {
-      this._finalize();
-  }
-
-  private _initialize(): void {
-    this._loadRegisterForm();
-    this._beginLoading();
-  }
-
   private _loadRegisterForm(): void {
     this.registerFormGroup = new FormGroup({
       name: new FormControl('', [Validators.required]),
@@ -72,16 +74,11 @@ export class RegisterComponent implements OnInit, OnDestroy {
     });
   }
 
-  private _beginLoading(): void {
+  private _changeLoading(): void {
     this._store.select('ui').pipe(takeUntil(this._unSubscribe))
       .subscribe(({isLoading}) => {
-      this.loading = isLoading;
+      this.isLoading = isLoading;
     })
-  }
-
-  private _finalize(): void {
-    this._unSubscribe.next();
-    this._unSubscribe.complete();
   }
 
 }

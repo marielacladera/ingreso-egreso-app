@@ -48,7 +48,7 @@
             <div class="form-group">
               <button
                 type="submit"
-                *ngIf="!loading"
+                *ngIf="!isLoading"
                 [disabled]="loginFormGroup.invalid"
                 class="btn btn-primary submit-btn btn-block"
               >
@@ -56,7 +56,7 @@
               </button>
               <button
                 type="button"
-                *ngIf="loading"
+                *ngIf="isLoading"
                 [disabled]="true"
                 class="btn btn-primary submit-btn btn-block"
               >
