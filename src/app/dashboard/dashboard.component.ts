@@ -6,8 +6,8 @@ import {
 } from '@angular/core';
 import { AppState } from '../app.reducer';
 import { Store } from '@ngrx/store';
-import { filter, mergeMap, take, takeUntil } from 'rxjs/operators';
-import { Subject, combineLatest, of } from 'rxjs';
+import { mergeMap, takeUntil } from 'rxjs/operators';
+import { Subject, of } from 'rxjs';
 import { IncomeDischargeListenerService } from '../services/income-discharge-listener.service';
 import * as incomeDischarge from '../income-discharge/income-discharge.actions';
 import { IncomeDischarge } from '../model/income-discharge.model';
@@ -20,14 +20,12 @@ import { IncomeDischarge } from '../model/income-discharge.model';
 })
 export class DashboardComponent implements OnInit, OnDestroy {
 
-  private _incomeDischargeSubs: Subject<void>;
   private _userSubs: Subject<void>;
 
   constructor(
     private _incomeDischargeListenerService: IncomeDischargeListenerService,
     private _store: Store<AppState>,
   ) {
-    this._incomeDischargeSubs = new Subject<void>();
     this._userSubs = new Subject<void>();
   }
 
@@ -56,7 +54,5 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private _finalize(): void {
     this._userSubs.next();
     this._userSubs.complete();
-    this._incomeDischargeSubs.next();
-    this._incomeDischargeSubs.complete();
   }
 }

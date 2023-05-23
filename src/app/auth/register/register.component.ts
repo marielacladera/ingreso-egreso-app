@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -24,7 +24,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
   constructor(
     private _authRegisterService: AuthRegisterService,
     private _store: Store<AppState>,
-    private _cdr: ChangeDetectorRef,
     private _router: Router
   ) {
     this.registerFormGroup = new FormGroup({});
@@ -62,7 +61,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
       })
       .catch(() => {
         this._store.dispatch(ui.stopLoading());
-        this._cdr.markForCheck();
       });
   }
 

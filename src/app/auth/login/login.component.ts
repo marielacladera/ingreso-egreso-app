@@ -26,7 +26,6 @@ export class LoginComponent implements OnInit, OnDestroy {
   constructor(
     private _authSigInService: AuthSignInService,
     private _store: Store<AppState>,
-    private _cdr: ChangeDetectorRef,
     private _router: Router,
   ) {
     this.loginFormGroup = new FormGroup({});
@@ -63,7 +62,6 @@ export class LoginComponent implements OnInit, OnDestroy {
       })
       .catch(() => {
         this._store.dispatch(ui.stopLoading());
-        //this._cdr.markForCheck();
       });
   }
 

@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subject, take, takeUntil } from 'rxjs';
 import { AppState } from 'src/app/app.reducer';
@@ -33,6 +32,11 @@ export class DetailComponent implements OnInit, OnDestroy {
     this._initialize();
   }
 
+  public ngOnDestroy(): void {
+    this._finalize();
+  }
+
+
   private _initialize(): void {
     this._store.select('incomeDischarge').pipe(takeUntil(this._unSubscribe)).subscribe(({items}) => {
       this.incomeDischarge = [...items];
@@ -40,14 +44,8 @@ export class DetailComponent implements OnInit, OnDestroy {
     });
   }
 
-  public ngOnDestroy(): void {
-    this._finalize();
-  }
-
   public delete(uidItem: string): void {
-    this._store.select('auth').pipe(take(1)).subscribe(({user}) => {
-      this._uidUser = user!.uid
-    });
+    this._loadUser();
     this._incomeDischargeDeleteByIdService.deleteItem(this._uidUser, uidItem)
     .then(() => {
       Swal.fire('Delete', 'Item was delete', 'success');
@@ -61,6 +59,12 @@ export class DetailComponent implements OnInit, OnDestroy {
   private _finalize(): void{
     this._unSubscribe.next();
     this._unSubscribe.complete();
+  }
+
+  private _loadUser(): void {
+    this._store.select('auth').pipe(take(1)).subscribe(({user}) => {
+      this._uidUser = user!.uid
+    });
   }
 
 }

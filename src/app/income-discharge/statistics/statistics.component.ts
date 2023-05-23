@@ -14,42 +14,38 @@ export class StatisticsComponent implements OnInit {
 
   public income: number;
   public discharge: number;
-
-  public totalIncome: number;
-  public totalDischarge: number;
-
-  public doughnutChartLabels: string[] = [ 'Ingresos', 'Egresos'];
   public doughnutChartDatasets: ChartConfiguration<'doughnut'>['data']['datasets'] = [
-      { data: [  ] }
-    ];
-
+    { data: [] }
+  ];
+  public doughnutChartLabels: string[] = [ 'Ingresos', 'Egresos'];
   public doughnutChartOptions: ChartConfiguration<'doughnut'>['options'] = {
     responsive: false
   };
+  public totalIncome: number;
+  public totalDischarge: number;
 
   constructor(
     private _store: Store<AppState>,
     private _cdr: ChangeDetectorRef
   ) {
-    this.income = 0;
-    this.discharge = 0;
     this.totalDischarge = 0;
     this.totalIncome = 0;
+    this.discharge = 0;
+    this.income = 0;
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this._initialize();
   }
 
-  private _initialize() {
+  private _initialize(): void {
     this._store.select('incomeDischarge').subscribe(({items}) => {
-      this.generateStatistic(items);
+      this._generateStatistic(items);
       this._cdr.markForCheck();
     });
-
   }
 
-  public generateStatistic(items: IncomeDischarge[]) {
+  private _generateStatistic(items: IncomeDischarge[]): void {
     for(const item of items){
       if(item.type === 'income') {
         this.totalIncome += item.amount*1;
@@ -59,8 +55,13 @@ export class StatisticsComponent implements OnInit {
         this.income ++;
       }
     }
+    this._loadDoughnutChart();
+  }
+
+  private _loadDoughnutChart(): void {
     this.doughnutChartDatasets = [
       { data: [ this.totalIncome, this.totalDischarge ] }
     ];
   }
+
 }

@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { IncomeDischargeCreateService } from '../services/income-discharge-create.service';
-import { IncomeDischarge } from '../model/income-discharge.model';
 import { AppState } from '../app.reducer';
 import { Store } from '@ngrx/store';
 import * as ui from '../shared/ui.actions';

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DocumentChangeType, Firestore, Unsubscribe } from '@angular/fire/firestore';
 import { CollectionReference, DocumentChange, DocumentData, QueryDocumentSnapshot, collection, onSnapshot } from '@firebase/firestore';
-import { AsyncSubject, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { IncomeDischarge } from '../model/income-discharge.model';
 import { IncomeDischargeFirestore } from '../model/income-discharge-firestore.model';
 
@@ -11,7 +11,6 @@ import { IncomeDischargeFirestore } from '../model/income-discharge-firestore.mo
 export class IncomeDischargeListenerService {
 
   public _items : IncomeDischarge[];
-  unSubscribe!: Unsubscribe;
 
   constructor(
     private _firestore: Firestore,
@@ -22,10 +21,12 @@ export class IncomeDischargeListenerService {
   public initIncomeDischargeListener(uid: string): Observable<IncomeDischarge[]>{
     const collectionRef: CollectionReference<DocumentData> = collection(this._firestore, `${uid}/income-discharge/items`);
       const changesObservable: Observable<IncomeDischarge[]> = new Observable<IncomeDischarge[]>((observer) => {
+      this._items = [];
       const unsubscribe: Unsubscribe = onSnapshot(collectionRef, (snapshop) => {
         snapshop.docChanges().forEach((change: DocumentChange<DocumentData>) => {
           this._handdleAction(change.type, change.doc);
         });
+        console.warn(this._items)
         observer.next(this._items);
       });
       return unsubscribe;
@@ -45,8 +46,9 @@ export class IncomeDischargeListenerService {
       case 'removed':
         this._removeItem(document);
         break;
-
       default:
+        this._removeItem(document);
+        this._addItem(document)
         break;
     }
   }
