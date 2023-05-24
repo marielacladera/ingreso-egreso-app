@@ -6,11 +6,11 @@ import * as incomeDischarge from "./income-discharge/income-discharge.reducer";
 export interface AppState{
   ui: ui.State,
   auth: auth.State,
-  incomeDischarge: incomeDischarge.State
+  //incomeDischarge: incomeDischarge.State
 }
 
 export const appReducers: ActionReducerMap<AppState> = {
   ui: ui.uiReducer,
   auth: auth.authReducer,
-  incomeDischarge: incomeDischarge.incomeDischargeReducer,
+  //incomeDischarge: incomeDischarge.incomeDischargeReducer,
 }

@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subject, take, takeUntil } from 'rxjs';
-import { AppState } from 'src/app/app.reducer';
 import { IncomeDischarge } from 'src/app/model/income-discharge.model';
 import { IncomeDischargeDeleteByIdService } from 'src/app/services/income-discharge-delete-by-id.service';
 import Swal from 'sweetalert2';
+import { AppStateWithIncome } from '../income-discharge.reducer';
 
 @Component({
   selector: 'app-detail',
@@ -21,7 +21,7 @@ export class DetailComponent implements OnInit, OnDestroy {
 
   constructor(
     private _incomeDischargeDeleteByIdService: IncomeDischargeDeleteByIdService,
-    private _store: Store<AppState>,
+    private _store: Store<AppStateWithIncome>,
     private _cdr: ChangeDetectorRef,
   ) {
     this._unSubscribe = new Subject<void>();

@@ -1,8 +1,8 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { AppState } from 'src/app/app.reducer';
 import { IncomeDischarge } from 'src/app/model/income-discharge.model';
 import { ChartConfiguration } from 'chart.js';
+import { AppStateWithIncome } from '../income-discharge.reducer';
 
 @Component({
   selector: 'app-statistics',
@@ -25,7 +25,7 @@ export class StatisticsComponent implements OnInit {
   public totalDischarge: number;
 
   constructor(
-    private _store: Store<AppState>,
+    private _store: Store<AppStateWithIncome>,
     private _cdr: ChangeDetectorRef
   ) {
     this.totalDischarge = 0;
